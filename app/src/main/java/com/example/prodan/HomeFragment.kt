@@ -113,13 +113,13 @@ class HomeFragment : Fragment() {
 
         // Esto en necesario para que la primera vez que se abre la app no se apliquen filtros
         // Esto solo se activará si hay algún filtro, en caso de que se agrequen mas hay que ponerlos en las variables
-        if (_especie != "" || _sexo != 0 || _raza != ""){
+        /*if (_especie != "" || _sexo != 0 || _raza != ""){
 
-            _petList = filter(_especie,_sexo, _raza, datas) as
+            _petList = filter(_especie,_sexo, _raza, datas) as Pet
 
             adapter.filterList(_petList)
         }
-
+        */
     }
 
     fun showPets() {
@@ -157,7 +157,7 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun filter(especie:String, sexo:Int, raza:String, lista: Pet?): List<Pet> {
+   /* private fun filter(especie:String, sexo:Int, raza:String, lista: Pet?): List<Pet> {
 
         // Se crea una instancia de la lista inicial
         var listafiltrada  = lista
@@ -187,7 +187,7 @@ class HomeFragment : Fragment() {
         }
         return listafiltrada
     }
-
+*/
     private fun saveData() {
 
         val acceptedPolicy = true
