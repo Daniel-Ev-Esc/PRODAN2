@@ -35,7 +35,6 @@ class HomeFragment : Fragment() {
     // Aquí van las variables de los filtros
     private var especie: String? = null
     private var sexo: Int? = null
-    private var raza: String? = null
     private var privacyPolicy = false
 
     private var _binding: FragmentHomeBinding? = null
@@ -75,7 +74,6 @@ class HomeFragment : Fragment() {
         arguments?.let {
             especie = it.getString("especie")
             sexo = it.getInt("sexo")
-            raza = it.getString("raza")
         }
     }
 
@@ -94,13 +92,11 @@ class HomeFragment : Fragment() {
         // Variables no mutables de los filtros
         var _especie = ""
         var _sexo = 0
-        var _raza = ""
 
         especie?.let { _especie = it }
         sexo?.let { _sexo = it }
-        raza?.let { _raza = it }
 
-        showPets(_especie,_sexo,_raza)
+        showPets(_especie,_sexo)
 
         binding.imageViewOptions.setOnClickListener {
             //Navegación por ID
@@ -113,7 +109,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    fun showPets(especie:String, sexo:Int, raza:String) {
+    fun showPets(especie:String, sexo:Int) {
         val retrofit = RetroFit.getInstance().create(ApiPets:: class.java)
 
         retrofit.getAllPets().enqueue(object : Callback<Pet> {
@@ -140,9 +136,9 @@ class HomeFragment : Fragment() {
 
                 Log.i("lista", datas?.data.toString())
 
-                if (especie != "" || sexo != 0 || raza != ""){
+                if (especie != "" || sexo != 0){
 
-                    petList = filter(especie,sexo, raza, datas)
+                    petList = filter(especie,sexo, datas)
 
                 }
 
@@ -167,7 +163,7 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun filter(especie:String, sexo:Int, raza:String, lista: Pet?): List<Data>? {
+    private fun filter(especie:String, sexo:Int, lista: Pet?): List<Data>? {
 
         // Se crea una instancia de la lista inicial
         var listafiltrada  = lista?.data
@@ -187,11 +183,9 @@ class HomeFragment : Fragment() {
 
             // Sexo
             if (sexo != 0 && (!item.attributes.male || item.attributes.male)) {
-                listafiltrada = listafiltrada?.minus(item)
-            }
-
-            if (raza != "" && item.attributes.type != raza) {
-                listafiltrada = listafiltrada?.minus(item)
+                if (item.attributes.male && sexo != 1 || !item.attributes.male && sexo != 2){
+                    listafiltrada = listafiltrada?.minus(item)
+                }
             }
 
         }

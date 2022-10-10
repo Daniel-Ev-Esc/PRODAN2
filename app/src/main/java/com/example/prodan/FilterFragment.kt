@@ -49,7 +49,6 @@ class FilterFragment : Fragment() {
         // Se guardarán los valores a filtrar en un bundle (Para mas filtros se deben agregar más variables)
         val bundle = Bundle()
         var especie = ""
-        var raza = ""
         var sexo = 0
         binding.ninguno.isChecked = true
 
@@ -66,20 +65,13 @@ class FilterFragment : Fragment() {
 
             // No funciona
             // Estamos guardando los id de las imágenes y no me los se
-            if (binding.switch3.isChecked) sexo = 2131165272
-            else if (binding.switch2.isChecked) sexo = 2131165288
+            if (binding.switch3.isChecked) sexo = 1
+            else if (binding.switch2.isChecked) sexo = 2
             else sexo = 0
-
-            // Pendiente (Raza)
-            // Necesito saber que razas hay para poder ponerlas en la lista, hay que ver como sacarlas de la lista
-            // raza = "Pug"
-
-            // Pendiente
 
             // Se guardan todos los filtros en el bundle
             bundle.putString("especie",especie)
             bundle.putInt("sexo",sexo)
-            bundle.putString("raza",raza)
 
             // Se navega a la pantalla pricipal con el bundle
             Navigation.findNavController(view).navigate(R.id.action_filterFragment2_to_homeFragment,bundle)
