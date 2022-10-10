@@ -59,9 +59,9 @@ class FilterFragment : Fragment() {
 
             // Ya funciona
             // Radio group de la especie
-            if(id == binding.perro.id) especie = "Perro"
-            else if (id == binding.gato.id) especie = "Gato"
-            else if (id == binding.otro.id) especie = "Otro"
+            if(id == binding.perro.id) especie = "perro"
+            else if (id == binding.gato.id) especie = "gato"
+            else if (id == binding.otro.id) especie = "otro"
             else especie = ""
 
             // No funciona
@@ -113,7 +113,9 @@ class FilterFragment : Fragment() {
             }
         }
 
-
+        binding.cerrar.setOnClickListener {
+            Navigation.findNavController(view).navigate(R.id.action_filterFragment2_to_homeFragment)
+        }
     }
     companion object {
         /**

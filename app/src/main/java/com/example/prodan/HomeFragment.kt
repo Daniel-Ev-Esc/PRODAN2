@@ -12,6 +12,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.prodan.data.Data
 //import com.example.prodan.data.petList
 import com.example.prodan.data.Pet
 import com.example.prodan.databinding.FragmentHomeBinding
@@ -90,7 +91,17 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showPets()
+        // Variables no mutables de los filtros
+        var _especie = ""
+        var _sexo = 0
+        var _raza = ""
+
+        especie?.let { _especie = it }
+        sexo?.let { _sexo = it }
+        raza?.let { _raza = it }
+
+        showPets(_especie,_sexo,_raza)
+
         binding.imageViewOptions.setOnClickListener {
             //Navegación por ID
             Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_optionsFragment)
@@ -100,29 +111,9 @@ class HomeFragment : Fragment() {
         binding.floatingActionButton.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_filterFragment2)
         }
-
-        // Variables no mutables de los filtros
-        var _petList = datas
-        var _especie = ""
-        var _sexo = 0
-        var _raza = ""
-
-        especie?.let { _especie = it }
-        sexo?.let { _sexo = it }
-        raza?.let { _raza = it }
-
-        // Esto en necesario para que la primera vez que se abre la app no se apliquen filtros
-        // Esto solo se activará si hay algún filtro, en caso de que se agrequen mas hay que ponerlos en las variables
-        /*if (_especie != "" || _sexo != 0 || _raza != ""){
-
-            _petList = filter(_especie,_sexo, _raza, datas) as Pet
-
-            adapter.filterList(_petList)
-        }
-        */
     }
 
-    fun showPets() {
+    fun showPets(especie:String, sexo:Int, raza:String) {
         val retrofit = RetroFit.getInstance().create(ApiPets:: class.java)
 
         retrofit.getAllPets().enqueue(object : Callback<Pet> {
@@ -142,13 +133,32 @@ class HomeFragment : Fragment() {
                 }
 
 
+                // Esto en necesario para que la primera vez que se abre la app no se apliquen filtros
+                // Esto solo se activará si hay algún filtro, en caso de que se agrequen mas hay que ponerlos en las variables
+
+                var petList = datas?.data
+
+                Log.i("lista", datas?.data.toString())
+
+                if (especie != "" || sexo != 0 || raza != ""){
+
+                    petList = filter(especie,sexo, raza, datas)
+
+                }
+
+                if (petList != null) {
+                    Log.i("lista","Filtrando...")
+                    adapter?.filterList(petList)
+                }
+
                 binding.rvpets.adapter = adapter
-                Log.i("tah", adapter.toString())
+                Log.i("objetos", adapter?.data.toString())
                 binding.rvpets.layoutManager =
                     GridLayoutManager(requireActivity(),
                         2, RecyclerView.VERTICAL, false)
-
             }
+
+
 
             override fun onFailure(call: Call<Pet>?, t: Throwable?) {
                 t?.printStackTrace()
@@ -157,37 +167,38 @@ class HomeFragment : Fragment() {
 
     }
 
-   /* private fun filter(especie:String, sexo:Int, raza:String, lista: Pet?): List<Pet> {
+    private fun filter(especie:String, sexo:Int, raza:String, lista: Pet?): List<Data>? {
 
         // Se crea una instancia de la lista inicial
-        var listafiltrada  = lista
+        var listafiltrada  = lista?.data
 
         // Por cada objeto si no cumple con las condiciones de los filtros se va quitando de la lista
-        for (item in lista){
+        for (item in lista?.data!!) {
+            Log.i("objetos",item.toString())
 
             // Especie
-            if (especie == "Otro"){
-                if (item.data[0].attributes.type == "Perro" || item.data[0].attributes.type == "Gato"){
-                    listafiltrada = listafiltrada.minus(item)
+            if (especie == "Otro") {
+                if (item.attributes.type == "perro" || item.attributes.type == "gato") {
+                    listafiltrada = listafiltrada?.minus(item)
                 }
-            }
-            else if (especie != "" && item.data[0].attributes.type != especie){
-                listafiltrada = listafiltrada.minus(item)
+            } else if (especie != "" && item.attributes.type != especie) {
+                listafiltrada = listafiltrada?.minus(item)
             }
 
             // Sexo
-            if (sexo != 0 && (!item.data[0].attributes.male || item.data[0].attributes.male)){
-                listafiltrada = listafiltrada.minus(item)
+            if (sexo != 0 && (!item.attributes.male || item.attributes.male)) {
+                listafiltrada = listafiltrada?.minus(item)
             }
 
-            if (raza != "" && item.data[0].attributes.type != raza){
-                listafiltrada = listafiltrada.minus(item)
+            if (raza != "" && item.attributes.type != raza) {
+                listafiltrada = listafiltrada?.minus(item)
             }
 
         }
+        Log.i("objetos",listafiltrada.toString())
         return listafiltrada
     }
-*/
+
     private fun saveData() {
 
         val acceptedPolicy = true
